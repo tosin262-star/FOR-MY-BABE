@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Babe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg: #000000; 
+            --text-main: #ffffff; 
+            --accent-red: #FF4D4D; /* Softer, high-end crimson */
+        }
+        
+        body, html { 
+            margin: 0; padding: 0; 
+            background: var(--bg); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif; 
+            height: 100vh; width: 100vw; 
+            overflow: hidden; 
+            display: flex; justify-content: center; align-items: center; 
+        }
+        
+        #starCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        
+        .slideshow-container { 
+            position: relative; z-index: 10; width: 100%; height: 100%; 
+            display: flex; justify-content: center; align-items: center; 
+        }
+        
+        .slide { 
+            position: absolute; width: 90%; max-width: 450px; 
+            opacity: 0; display: none; 
+            flex-direction: column; justify-content: center; align-items: center; 
+            text-align: center; transition: opacity 1.5s ease-in-out; 
+        }
+        
+        .slide.active { display: flex; opacity: 1; }
+        
+        .content-stack { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+        .img-container { 
+            width: 100%; height: 400px; 
+            display: flex; align-items: center; justify-content: center; 
+            border: 2px solid rgba(255, 77, 77, 0.3); 
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 15px; margin-bottom: 30px; 
+            padding: 10px; box-sizing: border-box; 
+        }
+
+        .img-container img { max-width: 100%; max-height: 100%; border-radius: 8px; object-fit: contain; }
+        
+        h1 { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 3rem; font-style: italic; 
+            color: var(--accent-red); 
+            margin-bottom: 20px; 
+            text-shadow: 0 0 20px rgba(255, 77, 77, 0.2);
+        }
+        
+        p { 
+            font-size: 1.25rem; font-weight: 600; line-height: 1.5; letter-spacing: 0.5px; 
+            margin: 0 auto; max-width: 90%; color: var(--text-main); 
+        }
+        
+        .cta-btn { 
+            background: var(--accent-red); color: #ffffff; border: none; 
+            padding: 22px 50px; border-radius: 100px; 
+            font-size: 1rem; font-weight: 600; text-transform: uppercase; 
+            letter-spacing: 3px; cursor: pointer; margin-top: 40px; 
+            transition: 0.3s; z-index: 100;
+            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+        }
+
+        .cta-btn:hover { transform: scale(1.05); background: #e63946; box-shadow: 0 0 25px rgba(255, 77, 77, 0.4); }
+
+        .kiss { position: fixed; z-index: 1000; font-size: 3.5rem; pointer-events: none; animation: flyUp 3s ease-out forwards; }
+        @keyframes flyUp { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-110vh) rotate(35deg) scale(3.5); opacity: 0; } }
+    </style>
+</head>
+<body>
+    <canvas id="starCanvas"></canvas>
+    <audio id="song" loop preload="auto"><source src="music.mp3" type="audio/mpeg"></audio>
+
+    <div class="slideshow-container">
+        <div class="slide active">
+            <h1>From Me to You</h1>
+            <p>I made this for the best part of my day.</p>
+            <button class="cta-btn" onclick="startExperience()">Open Message</button>
+        </div>
+
+        <div class="slide"><p>Amongst trillions and trillions of stars,<br>over billions of years...</p></div>
+
+        <div class="slide">
+            <div class="content-stack">
+                <div class="img-container"><img src="her1.jpeg"></div>
+                <p>It is so incredibly, unfathomably unlikely to be alive,</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content-stack">
+                <div class="img-container"><img src="her2.jpeg"></div>
+                <p>and yet here I am, getting the impossible chance to know you.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content-stack">
+                <div class="img-container"><img src="her3.jpeg"></div>
+                <p>Every single day, I cannot believe how lucky I am...</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content-stack">
+                <div class="img-container"><img src="her4.jpeg"></div>
+                <p>to get to spend this life with you.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content-stack">
+                <div class="img-container"><img src="her5.jpeg"></div>
+                <p>I love you more than all the space in the universe can contain.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Happy Valentine's Day ❤️</h1>
+            <button class="cta-btn" onclick="igniteLove()">Click for a Surprise <span>💋</span></button>
+        </div>
+
+        <div class="slide">
+            <div class="content-stack">
+                <div class="img-container" style="filter: grayscale(100%); border-color: #555;"><img src="cheers.jpeg"></div>
+                <p style="letter-spacing: 12px; color: var(--accent-red);">CHEERS TO US</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function initStars() { 
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = [];
+            for(let i=0; i<150; i++) {
+                stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*2.5, blink: Math.random()*0.05, velX: (Math.random()-0.5)*0.2, velY: (Math.random()-0.5)*0.2 });
+            }
+        }
+
+        function drawStars() {
+            ctx.fillStyle = '#000'; ctx.fillRect(0,0,canvas.width, canvas.height);
+            stars.forEach(s => { 
+                s.x += s.velX; s.y += s.velY;
+                if(s.x < 0) s.x = canvas.width; if(s.x > canvas.width) s.x = 0;
+                if(s.y < 0) s.y = canvas.height; if(s.y > canvas.height) s.y = 0;
+                ctx.fillStyle = `rgba(255,255,255,${Math.abs(Math.sin(Date.now()*s.blink*0.01))})`; 
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill(); 
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        initStars(); drawStars();
+        window.addEventListener('resize', initStars);
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function startExperience() {
+            const audio = document.getElementById('song');
+            audio.play().catch(e => console.log("Audio block bypass required"));
+            transitionSlide();
+        }
+
+        function transitionSlide() {
+            slides[currentSlide].style.opacity = '0';
+            setTimeout(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide++;
+                if (currentSlide < slides.length) {
+                    slides[currentSlide].classList.add('active');
+                    setTimeout(() => { slides[currentSlide].style.opacity = '1'; }, 50);
+                    if (currentSlide < slides.length - 2) setTimeout(transitionSlide, 5500);
+                }
+            }, 1500);
+        }
+
+        function igniteLove() {
+            for (let i = 0; i < 65; i++) {
+                setTimeout(() => {
+                    const kiss = document.createElement('div'); kiss.className = 'kiss'; kiss.innerHTML = '💋';
+                    kiss.style.left = Math.random()*95+'vw'; kiss.style.bottom='-10vh';
+                    document.body.appendChild(kiss); setTimeout(() => kiss.remove(), 3000);
+                }, i * 110);
+            }
+            setTimeout(transitionSlide, 4500);
+        }
+    </script>
+</body>
+</html>
