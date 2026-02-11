@@ -38,7 +38,7 @@
         
         .slide.active { display: flex; }
         
-        /* Fixed: Only elements inside fade, container stays solid */
+        /* Elements inside fade, container stays solid */
         .slide img, .slide p, .slide h1, .slide button { 
             opacity: 0; 
             transition: opacity 1s ease-in-out; 
@@ -50,7 +50,6 @@
         
         .content-stack { display: flex; flex-direction: column; align-items: center; width: 100%; }
 
-        /* Consistent: 4px Crimson Red + Glassmorphism */
         .img-container { 
             width: 100%; height: 400px; 
             display: flex; align-items: center; justify-content: center; 
@@ -95,7 +94,7 @@
         }
 
         .replay-btn {
-            background: transparent; color: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent; color: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; font-weight: 400;
             margin-top: 30px; cursor: pointer; transition: 0.3s;
         }
@@ -192,7 +191,10 @@
                         nextElements.forEach(el => el.style.opacity = '1'); 
                     }, 50);
 
-                    if (currentSlide < slides.length - 1) setTimeout(transitionSlide, 5500);
+                    // FIXED: Only trigger next transition if it's not the final slide
+                    if (currentSlide < slides.length - 1) {
+                        setTimeout(transitionSlide, 5500);
+                    }
                 }
             }, 1000);
         }
