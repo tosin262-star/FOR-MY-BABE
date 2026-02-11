@@ -31,22 +31,12 @@
         
         .slide { 
             position: absolute; width: 90%; max-width: 450px; 
-            display: none; 
+            display: none; opacity: 0;
             flex-direction: column; justify-content: center; align-items: center; 
-            text-align: center; 
+            text-align: center; transition: opacity 1.5s ease-in-out;
         }
         
-        .slide.active { display: flex; }
-        
-        /* Elements inside fade, container stays solid */
-        .slide img, .slide p, .slide h1, .slide button { 
-            opacity: 0; 
-            transition: opacity 1s ease-in-out; 
-        }
-        
-        .slide.active img, .slide.active p, .slide.active h1, .slide.active button { 
-            opacity: 1; 
-        }
+        .slide.active { display: flex; opacity: 1; }
         
         .content-stack { display: flex; flex-direction: column; align-items: center; width: 100%; }
 
@@ -65,8 +55,7 @@
         }
 
         .img-container img { 
-            max-width: 100%; 
-            max-height: 100%; 
+            max-width: 100%; max-height: 100%; 
             border-radius: 28px; 
             object-fit: contain; 
         }
@@ -93,14 +82,13 @@
             display: inline-flex; align-items: center; justify-content: center; gap: 12px;
         }
 
+        .cta-btn:hover { transform: scale(1.05); background: #e63946; box-shadow: 0 0 25px rgba(255, 77, 77, 0.4); }
+
         .replay-btn {
-            background: transparent; color: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.3);
+            background: transparent; color: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; font-weight: 400;
             margin-top: 30px; cursor: pointer; transition: 0.3s;
         }
-        .replay-btn:hover { color: #fff; border-color: #fff; background: rgba(255, 255, 255, 0.1); }
-
-        .cta-btn:hover { transform: scale(1.05); background: #e63946; box-shadow: 0 0 25px rgba(255, 77, 77, 0.4); }
 
         .kiss { position: fixed; z-index: 1000; font-size: 3.5rem; pointer-events: none; animation: flyUp 3s ease-out forwards; }
         @keyframes flyUp { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-110vh) rotate(35deg) scale(3.5); opacity: 0; } }
@@ -118,7 +106,6 @@
         </div>
 
         <div class="slide"><p>Trillions of stars,<br>yet my eyes only ever look for one.</p></div>
-
         <div class="slide"><div class="content-stack"><div class="img-container"><img src="her1.jpeg"></div><p>Somehow, against all odds, I got the chance to love you.</p></div></div>
         <div class="slide"><div class="content-stack"><div class="img-container"><img src="her2.jpeg"></div><p>And I plan on spending the rest of my forever doing exactly that.</p></div></div>
         <div class="slide"><div class="content-stack"><div class="img-container"><img src="her3.jpeg"></div><p>Every single day, I cannot believe how lucky I am...</p></div></div>
@@ -170,33 +157,25 @@
         const slides = document.querySelectorAll('.slide');
 
         function startExperience() {
-            const audio = document.getElementById('song');
-            audio.play().catch(e => console.log("Audio block bypass required"));
+            document.getElementById('song').play();
             transitionSlide();
         }
 
         function transitionSlide() {
-            const currentElements = slides[currentSlide].querySelectorAll('img, p, h1, button');
-            currentElements.forEach(el => el.style.opacity = '0');
-
+            slides[currentSlide].style.opacity = '0';
             setTimeout(() => {
                 slides[currentSlide].classList.remove('active');
                 currentSlide++;
                 if (currentSlide < slides.length) {
                     slides[currentSlide].classList.add('active');
-                    const nextElements = slides[currentSlide].querySelectorAll('img, p, h1, button');
-                    nextElements.forEach(el => el.style.opacity = '0');
+                    setTimeout(() => { slides[currentSlide].style.opacity = '1'; }, 50);
                     
-                    setTimeout(() => { 
-                        nextElements.forEach(el => el.style.opacity = '1'); 
-                    }, 50);
-
-                    // FIXED: Only trigger next transition if it's not the final slide
-                    if (currentSlide < slides.length - 1) {
+                    // Stop auto-transitioning on the "Happy Valentine's" and "Cheers" slides
+                    if (currentSlide < slides.length - 2) {
                         setTimeout(transitionSlide, 5500);
                     }
                 }
-            }, 1000);
+            }, 1500);
         }
 
         function igniteLove() {
@@ -207,6 +186,7 @@
                     document.body.appendChild(kiss); setTimeout(() => kiss.remove(), 3000);
                 }, i * 110);
             }
+            // Manually trigger the very last slide after the kisses start
             setTimeout(transitionSlide, 4500);
         }
     </script>
