@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For My Babe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
     <style>
         :root { 
             --bg: #000000; 
@@ -40,6 +40,7 @@
         
         .slide.active { display: flex; opacity: 1; }
         
+        /* Fade transition for text and photos */
         .slide img, .slide p, .slide h1, .slide button { 
             opacity: 0; 
             transition: opacity 2s ease-in-out; 
@@ -51,6 +52,7 @@
         
         .content-stack { display: flex; flex-direction: column; align-items: center; width: 100%; }
 
+        /* Stable Container with 4px Crimson Stroke */
         .img-container { 
             width: 100%; height: 400px; 
             display: flex; align-items: center; justify-content: center; 
@@ -66,6 +68,7 @@
             overflow: hidden;
         }
 
+        /* Ken Burns / Slow Zoom Effect */
         .img-container img { 
             max-width: 100%; max-height: 100%; 
             border-radius: 28px; 
@@ -138,7 +141,8 @@
         <div class="slide">
             <div class="content-stack">
                 <div class="img-container"><img src="cheers.jpeg"></div>
-                <p style="letter-spacing: 12px; color: var(--accent-red);">CHEERS TO US</p>
+                <p style="letter-spacing: 12px; color: var(--accent-red); margin-bottom: 10px;">CHEERS TO US</p>
+                <p style="font-size: 1.1rem; font-weight: 400; font-style: italic; opacity: 0.8; max-width: 85%;">And I’d choose you again. Every time.</p>
                 <button class="replay-btn" onclick="location.reload()">Watch Again</button>
             </div>
         </div>
@@ -175,7 +179,7 @@
         const slides = document.querySelectorAll('.slide');
 
         function startExperience() {
-            document.getElementById('song').play();
+            document.getElementById('song').play().catch(e => console.log("Audio play failed"));
             transitionSlide();
         }
 
@@ -185,6 +189,8 @@
 
             if (nextSlideIndex < slides.length) {
                 const nextSlide = slides[nextSlideIndex];
+                
+                // Show next slide behind the current one to prevent empty box
                 nextSlide.style.display = 'flex';
                 nextSlide.style.opacity = '0';
 
@@ -202,6 +208,7 @@
                     nextSlide.classList.add('active');
                     currentSlide = nextSlideIndex;
 
+                    // Automatic flow control
                     if (currentSlide < slides.length - 2) {
                         setTimeout(transitionSlide, 6500); 
                     }
@@ -217,6 +224,7 @@
                     document.body.appendChild(kiss); setTimeout(() => kiss.remove(), 3000);
                 }, i * 110);
             }
+            // Cinematic Pause: 6.5s delay before the final "Cheers" screen
             setTimeout(transitionSlide, 6500);
         }
     </script>
