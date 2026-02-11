@@ -38,10 +38,10 @@
         
         .slide.active { display: flex; }
         
-        /* STABLE CONTAINER LOGIC: Elements inside fade, container stays */
+        /* TWEAK 2: Gentle Fade for the entire content stack */
         .slide img, .slide p, .slide h1, .slide button { 
             opacity: 0; 
-            transition: opacity 1s ease-in-out; 
+            transition: opacity 2s ease-in-out; /* Slower, gentler fade */
         }
         
         .slide.active img, .slide.active p, .slide.active h1, .slide.active button { 
@@ -62,12 +62,20 @@
             padding: 12px; 
             box-sizing: border-box; 
             box-shadow: 0 10px 40px rgba(255, 77, 77, 0.2);
+            overflow: hidden; /* Necessary for the zoom effect */
         }
 
+        /* TWEAK 1: Slow Zoom on Pictures */
         .img-container img { 
             max-width: 100%; max-height: 100%; 
             border-radius: 28px; 
             object-fit: contain; 
+            transform: scale(1);
+            transition: transform 6s ease-in-out; /* The zoom duration */
+        }
+        
+        .slide.active .img-container img {
+            transform: scale(1.1); /* Subtle 10% zoom when active */
         }
         
         h1 { 
@@ -172,7 +180,6 @@
         }
 
         function transitionSlide() {
-            // Fade out the content of the current slide
             const currentElements = slides[currentSlide].querySelectorAll('img, p, h1, button');
             currentElements.forEach(el => el.style.opacity = '0');
 
@@ -183,17 +190,15 @@
                     slides[currentSlide].classList.add('active');
                     const nextElements = slides[currentSlide].querySelectorAll('img, p, h1, button');
                     
-                    // Trigger fade in for the next slide's content
                     setTimeout(() => { 
                         nextElements.forEach(el => el.style.opacity = '1'); 
                     }, 50);
                     
-                    // Control the auto-flow
                     if (currentSlide < slides.length - 2) {
-                        setTimeout(transitionSlide, 5500);
+                        setTimeout(transitionSlide, 6000); /* Slightly longer hold for the zoom */
                     }
                 }
-            }, 1000);
+            }, 1500); /* Smoother slide exit */
         }
 
         function igniteLove() {
@@ -204,8 +209,8 @@
                     document.body.appendChild(kiss); setTimeout(() => kiss.remove(), 3000);
                 }, i * 110);
             }
-            // Moves to the final "Cheers" screen after kisses start
-            setTimeout(transitionSlide, 4500);
+            // TWEAK 3: Cinematic Pause (4.5s kiss animation + 2s extra hold = 6.5s)
+            setTimeout(transitionSlide, 6500);
         }
     </script>
 </body>
