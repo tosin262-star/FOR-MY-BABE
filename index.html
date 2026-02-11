@@ -34,16 +34,15 @@
             display: none; 
             flex-direction: column; justify-content: center; align-items: center; 
             text-align: center; 
-            transition: opacity 1.5s ease-in-out;
+            transition: opacity 2s ease-in-out; /* Slower fade for romance */
             opacity: 0;
         }
         
         .slide.active { display: flex; opacity: 1; }
         
-        /* Fade transition for text and photos */
         .slide img, .slide p, .slide h1, .slide button { 
             opacity: 0; 
-            transition: opacity 2s ease-in-out; 
+            transition: opacity 2.5s ease-in-out; 
         }
         
         .slide.active img, .slide.active p, .slide.active h1, .slide.active button { 
@@ -52,7 +51,6 @@
         
         .content-stack { display: flex; flex-direction: column; align-items: center; width: 100%; }
 
-        /* Stable Container with 4px Crimson Stroke */
         .img-container { 
             width: 100%; height: 400px; 
             display: flex; align-items: center; justify-content: center; 
@@ -68,17 +66,16 @@
             overflow: hidden;
         }
 
-        /* Ken Burns / Slow Zoom Effect */
         .img-container img { 
             max-width: 100%; max-height: 100%; 
             border-radius: 28px; 
             object-fit: contain; 
             transform: scale(1);
-            transition: transform 8s ease-out;
+            transition: transform 12s ease-out; /* Slower zoom to match 10s hold */
         }
         
         .slide.active .img-container img {
-            transform: scale(1.15);
+            transform: scale(1.18);
         }
         
         h1 { 
@@ -103,12 +100,11 @@
             display: inline-flex; align-items: center; justify-content: center; gap: 12px;
         }
 
-        .cta-btn:hover { transform: scale(1.05); background: #e63946; box-shadow: 0 0 25px rgba(255, 77, 77, 0.4); }
-
         .replay-btn {
             background: transparent; color: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; font-weight: 400;
             margin-top: 30px; cursor: pointer; transition: 0.3s;
+            opacity: 0; /* Starts hidden */
         }
 
         .kiss { position: fixed; z-index: 1000; font-size: 3.5rem; pointer-events: none; animation: flyUp 3s ease-out forwards; }
@@ -189,8 +185,6 @@
 
             if (nextSlideIndex < slides.length) {
                 const nextSlide = slides[nextSlideIndex];
-                
-                // Show next slide behind the current one to prevent empty box
                 nextSlide.style.display = 'flex';
                 nextSlide.style.opacity = '0';
 
@@ -198,8 +192,15 @@
                     oldSlide.style.opacity = '0';
                     nextSlide.style.opacity = '1';
                     
-                    const nextElements = nextSlide.querySelectorAll('img, p, h1, button');
+                    const nextElements = nextSlide.querySelectorAll('img, p, h1, .cta-btn');
                     nextElements.forEach(el => el.style.opacity = '1');
+
+                    if (nextSlideIndex === slides.length - 1) {
+                        const replayBtn = nextSlide.querySelector('.replay-btn');
+                        if (replayBtn) {
+                            setTimeout(() => { replayBtn.style.opacity = '1'; }, 4000); 
+                        }
+                    }
                 }, 100);
 
                 setTimeout(() => {
@@ -208,24 +209,24 @@
                     nextSlide.classList.add('active');
                     currentSlide = nextSlideIndex;
 
-                    // Automatic flow control
+                    // UPDATED: 10 second hold for each slide to fill the 1:45 song
                     if (currentSlide < slides.length - 2) {
-                        setTimeout(transitionSlide, 6500); 
+                        setTimeout(transitionSlide, 10000); 
                     }
-                }, 1600); 
+                }, 2000); 
             }
         }
 
         function igniteLove() {
-            for (let i = 0; i < 65; i++) {
+            for (let i = 0; i < 120; i++) {
                 setTimeout(() => {
                     const kiss = document.createElement('div'); kiss.className = 'kiss'; kiss.innerHTML = '💋';
                     kiss.style.left = Math.random()*95+'vw'; kiss.style.bottom='-10vh';
                     document.body.appendChild(kiss); setTimeout(() => kiss.remove(), 3000);
-                }, i * 110);
+                }, i * 180);
             }
-            // Cinematic Pause: 6.5s delay before the final "Cheers" screen
-            setTimeout(transitionSlide, 6500);
+            // UPDATED: Holds on the V-Day screen for 30 seconds to finish the music drama
+            setTimeout(transitionSlide, 30000);
         }
     </script>
 </body>
