@@ -34,14 +34,17 @@
             display: none; 
             flex-direction: column; justify-content: center; align-items: center; 
             text-align: center; 
+            /* Added transition to the slide itself for smooth cross-fading */
+            transition: opacity 1.5s ease-in-out;
+            opacity: 0;
         }
         
-        .slide.active { display: flex; }
+        .slide.active { display: flex; opacity: 1; }
         
-        /* TWEAK 2: Gentle Fade for the entire content stack */
+        /* Inner elements still have their own slow fade */
         .slide img, .slide p, .slide h1, .slide button { 
             opacity: 0; 
-            transition: opacity 2s ease-in-out; /* Slower, gentler fade */
+            transition: opacity 2s ease-in-out; 
         }
         
         .slide.active img, .slide.active p, .slide.active h1, .slide.active button { 
@@ -62,20 +65,20 @@
             padding: 12px; 
             box-sizing: border-box; 
             box-shadow: 0 10px 40px rgba(255, 77, 77, 0.2);
-            overflow: hidden; /* Necessary for the zoom effect */
+            overflow: hidden;
         }
 
-        /* TWEAK 1: Slow Zoom on Pictures */
         .img-container img { 
             max-width: 100%; max-height: 100%; 
             border-radius: 28px; 
             object-fit: contain; 
             transform: scale(1);
-            transition: transform 6s ease-in-out; /* The zoom duration */
+            transition: transform 8s ease-out; /* Longer zoom for elegance */
         }
         
+        /* Triggers the zoom when the slide is active */
         .slide.active .img-container img {
-            transform: scale(1.1); /* Subtle 10% zoom when active */
+            transform: scale(1.15);
         }
         
         h1 { 
@@ -117,7 +120,7 @@
     <audio id="song" loop preload="auto"><source src="music.mp3" type="audio/mpeg"></audio>
 
     <div class="slideshow-container">
-        <div class="slide active">
+        <div class="slide active" style="opacity: 1;">
             <h1>From Me to You</h1>
             <p>There are things in this world that are rare and then there's you.</p>
             <button class="cta-btn" onclick="startExperience()">Open Message</button>
@@ -180,25 +183,37 @@
         }
 
         function transitionSlide() {
+            // Start fading out the current slide
+            slides[currentSlide].style.opacity = '0';
+            
+            // Give the current elements a head-start on fading
             const currentElements = slides[currentSlide].querySelectorAll('img, p, h1, button');
             currentElements.forEach(el => el.style.opacity = '0');
 
             setTimeout(() => {
                 slides[currentSlide].classList.remove('active');
                 currentSlide++;
+                
                 if (currentSlide < slides.length) {
                     slides[currentSlide].classList.add('active');
+                    
+                    // Reset zoom position for the incoming image
+                    const nextImg = slides[currentSlide].querySelector('img');
+                    if(nextImg) nextImg.style.transform = 'scale(1)';
+
                     const nextElements = slides[currentSlide].querySelectorAll('img, p, h1, button');
                     
+                    // Small delay to ensure the browser processes the 'active' class
                     setTimeout(() => { 
+                        slides[currentSlide].style.opacity = '1';
                         nextElements.forEach(el => el.style.opacity = '1'); 
-                    }, 50);
+                    }, 100);
                     
                     if (currentSlide < slides.length - 2) {
-                        setTimeout(transitionSlide, 6000); /* Slightly longer hold for the zoom */
+                        setTimeout(transitionSlide, 6500); 
                     }
                 }
-            }, 1500); /* Smoother slide exit */
+            }, 1200); // This timing prevents the "snap" disappearance
         }
 
         function igniteLove() {
@@ -209,7 +224,6 @@
                     document.body.appendChild(kiss); setTimeout(() => kiss.remove(), 3000);
                 }, i * 110);
             }
-            // TWEAK 3: Cinematic Pause (4.5s kiss animation + 2s extra hold = 6.5s)
             setTimeout(transitionSlide, 6500);
         }
     </script>
