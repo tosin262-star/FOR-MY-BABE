@@ -31,20 +31,30 @@
         
         .slide { 
             position: absolute; width: 90%; max-width: 450px; 
-            opacity: 0; display: none; 
+            display: none; 
             flex-direction: column; justify-content: center; align-items: center; 
-            text-align: center; transition: opacity 1.5s ease-in-out; 
+            text-align: center; 
         }
         
-        .slide.active { display: flex; opacity: 1; }
+        .slide.active { display: flex; }
+        
+        /* Fixed: Only elements inside fade, container stays solid */
+        .slide img, .slide p, .slide h1, .slide button { 
+            opacity: 0; 
+            transition: opacity 1s ease-in-out; 
+        }
+        
+        .slide.active img, .slide.active p, .slide.active h1, .slide.active button { 
+            opacity: 1; 
+        }
         
         .content-stack { display: flex; flex-direction: column; align-items: center; width: 100%; }
 
-        /* FIXED: 4px Crimson Red Stroke + Glassmorphism */
+        /* Consistent: 4px Crimson Red + Glassmorphism */
         .img-container { 
             width: 100%; height: 400px; 
             display: flex; align-items: center; justify-content: center; 
-            border: 4px solid var(--accent-red); /* Back to Crimson Red at 4px */
+            border: 4px solid var(--accent-red); 
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(15px); 
             -webkit-backdrop-filter: blur(15px);
@@ -58,7 +68,7 @@
         .img-container img { 
             max-width: 100%; 
             max-height: 100%; 
-            border-radius: 28px; /* Correctly nested for 40px container */
+            border-radius: 28px; 
             object-fit: contain; 
         }
         
@@ -123,7 +133,7 @@
 
         <div class="slide">
             <div class="content-stack">
-                <div class="img-container" style="filter: grayscale(100%); border-color: #555;"><img src="cheers.jpeg"></div>
+                <div class="img-container"><img src="cheers.jpeg"></div>
                 <p style="letter-spacing: 12px; color: var(--accent-red);">CHEERS TO US</p>
                 <button class="replay-btn" onclick="location.reload()">Watch Again</button>
             </div>
@@ -167,16 +177,24 @@
         }
 
         function transitionSlide() {
-            slides[currentSlide].style.opacity = '0';
+            const currentElements = slides[currentSlide].querySelectorAll('img, p, h1, button');
+            currentElements.forEach(el => el.style.opacity = '0');
+
             setTimeout(() => {
                 slides[currentSlide].classList.remove('active');
                 currentSlide++;
                 if (currentSlide < slides.length) {
                     slides[currentSlide].classList.add('active');
-                    setTimeout(() => { slides[currentSlide].style.opacity = '1'; }, 50);
+                    const nextElements = slides[currentSlide].querySelectorAll('img, p, h1, button');
+                    nextElements.forEach(el => el.style.opacity = '0');
+                    
+                    setTimeout(() => { 
+                        nextElements.forEach(el => el.style.opacity = '1'); 
+                    }, 50);
+
                     if (currentSlide < slides.length - 1) setTimeout(transitionSlide, 5500);
                 }
-            }, 1500);
+            }, 1000);
         }
 
         function igniteLove() {
